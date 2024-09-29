@@ -10,9 +10,22 @@ echo $SECRET_NUMBER
 
 #commit 2
 #request user name
+echo Enter your username:
+read USERNAME
+USERNAME_RESULT=$($PSQL "SELECT name FROM players WHERE name='$USERNAME'")
 #if it is a new user
-#flag that new user will need to be created, print welcome message
-#else print returning message
+if [[ -z $USERNAME_RESULT ]]
+then
+  #flag that new user will need to be created, print welcome message
+  NEW_USER_FLAG=true
+  echo "Welcome, $USERNAME! It looks like this is your first time here."
+  #else print returning message
+else
+  USER_INFO=$($PSQL "SELECT games_played, best_game FROM players WHERE name = '$USERNAME'") | while IFS='|' read GAMES_PLAYED BEST_GAME
+  do
+  echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
+  done
+fi
 
 #commit 3
 #print number request
