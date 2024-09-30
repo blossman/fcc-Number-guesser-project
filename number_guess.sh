@@ -38,7 +38,6 @@ NUMBER_GAME () {
   read GUESS
   #count guess
   ((GUESS_COUNT++))
-  echo "Guess #$GUESS_COUNT"
   #if it is not an integer, 
   if [[ ! $GUESS =~ ^[0-9]+$ ]]
   then
