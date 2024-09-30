@@ -62,6 +62,7 @@ NUMBER_GAME () {
   then
     #print error
     echo That is not an integer, guess again:
+    ((GUESS_COUNT--))
     #run function
     NUMBER_GAME
     #else, if greater than number
