@@ -6,7 +6,7 @@ PSQL="psql --username=freecodecamp --dbname=number_guess -t --no-align -c"
 
 #generate secret number between 1 and 1000
 SECRET_NUMBER=$(( 1 + $RANDOM % 1000 ))
-echo $SECRET_NUMBER
+
 
 #commit 2
 #request user name
@@ -29,22 +29,52 @@ fi
 
 #commit 3
 #print number request
+echo "Guess the secret number between 1 and 1000:"
+echo $SECRET_NUMBER
+GUESS_COUNT=0
 #Number game function
+NUMBER_GAME () {
   #read number
+  read GUESS
   #count guess
+  ((GUESS_COUNT++))
+  echo "Guess #$GUESS_COUNT"
   #if it is not an integer, 
-  #print error
-  #run function
-  #else, if greater than number
-  #print clue
-  #run function
-  #else if less than number 
-  #print clue
-  #run function
-  #else if equal to number
-  #print victory
-  #run data store function
-
+  if [[ ! $GUESS =~ ^[0-9]+$ ]]
+  then
+    #print error
+    echo That is not an integer, guess again:
+    #run function
+    NUMBER_GAME
+    #else, if greater than number
+  else
+    if [[ $GUESS -lt $SECRET_NUMBER ]]
+    then  
+      #print clue
+      echo "it's higher than that, guess again:"
+      #run function
+      NUMBER_GAME
+      #else if less than number
+    else
+      if [[ $GUESS -gt $SECRET_NUMBER ]]
+      then
+        #print clue
+        echo "It's lower than that, guess again:"
+        #run function
+        NUMBER_GAME
+        #else if equal to number
+      else
+        if [[ $GUESS == $SECRET_NUMBER ]]
+        then
+          #print victory
+          echo "You guessed it in $GUESS_COUNT tries. The secret number was $SECRET_NUMBER. Nice job!"
+          #run data store function
+        fi
+      fi
+    fi  
+  fi  
+}
+NUMBER_GAME
 #commit 4
 #data_storage
   #if first time flag
