@@ -50,7 +50,7 @@ NUMBER_GAME () {
     if [[ $GUESS -lt $SECRET_NUMBER ]]
     then  
       #print clue
-      echo "it's higher than that, guess again:"
+      echo "It's higher than that, guess again:"
       #run function
       NUMBER_GAME
       #else if less than number
