@@ -28,6 +28,28 @@ else
   done
 fi
 
+#commit 4
+#data_storage
+#if first time flag
+SAVE_DATA () {
+  if [[ -v NEW_USER_FLAG  ]]
+  then
+      #add new user record
+    INSERT_NEW_USER=$($PSQL "INSERT INTO players(name, games_played, best_game) VALUES('$USERNAME', 1, $GUESS_COUNT)") 
+      #else, pull best #guesses from DB
+  else
+      #increase number of games played by 1
+    UPDATE_GAMES_PLAYED=$($PSQL "UPDATE players SET games_played = games_played + 1 WHERE name = '$USERNAME'")
+    CURRENT_BEST_GUESS=$($PSQL "SELECT best_game FROM players WHERE name = '$USERNAME'")
+      #if current guesses less than best guess
+    if [[ $CURRENT_BEST_GUESS -gt $GUESS_COUNT ]]
+    then
+      #update best guess
+      UPDATE_BEST_GAME=$($PSQL "UPDATE players SET best_game = $GUESS_COUNT WHERE name = '$USERNAME'")
+    fi
+  fi
+}
+
 #commit 3
 #print number request
 echo "Guess the secret number between 1 and 1000:"
@@ -65,9 +87,11 @@ NUMBER_GAME () {
       else
         if [[ $GUESS == $SECRET_NUMBER ]]
         then
+        #run data store function
+          SAVE_DATA
           #print victory
           echo "You guessed it in $GUESS_COUNT tries. The secret number was $SECRET_NUMBER. Nice job!"
-          #run data store function
+          
         fi
       fi
     fi  
@@ -75,22 +99,3 @@ NUMBER_GAME () {
 }
 NUMBER_GAME
 
-#commit 4
-#data_storage
-#if first time flag
-if [[ -v NEW_USER_FLAG  ]]
-then
-    #add new user record
-  INSERT_NEW_USER=$($PSQL "INSERT INTO players(name, games_played, best_game) VALUES('$USERNAME', 1, $GUESS_COUNT)") 
-    #else, pull best #guesses from DB
-else
-    #increase number of games played by 1
-  UPDATE_GAMES_PLAYED=$($PSQL "UPDATE players SET games_played = games_played + 1 WHERE name = '$USERNAME'")
-  CURRENT_BEST_GUESS=$($PSQL "SELECT best_game FROM players WHERE name = '$USERNAME'")
-    #if current guesses less than best guess
-  if [[ $CURRENT_BEST_GUESS -gt $GUESS_COUNT ]]
-  then
-    #update best guess
-    UPDATE_BEST_GAME=$($PSQL "UPDATE players SET best_game = $GUESS_COUNT WHERE name = '$USERNAME'")
-  fi
-fi
