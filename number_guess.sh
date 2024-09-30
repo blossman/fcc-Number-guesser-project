@@ -17,7 +17,7 @@ USERNAME_RESULT=$($PSQL "SELECT name FROM players WHERE name='$USERNAME'")
 if [[ -z $USERNAME_RESULT ]]
 then
   #flag that new user will need to be created, print welcome message
-  NEW_USER_FLAG=true
+  NEW_USER_FLAG="true"
   echo "Welcome, $USERNAME! It looks like this is your first time here."
   #else print returning message
 else
@@ -30,7 +30,6 @@ fi
 #commit 3
 #print number request
 echo "Guess the secret number between 1 and 1000:"
-echo $SECRET_NUMBER
 GUESS_COUNT=0
 #Number game function
 NUMBER_GAME () {
@@ -75,11 +74,23 @@ NUMBER_GAME () {
   fi  
 }
 NUMBER_GAME
+
 #commit 4
 #data_storage
-  #if first time flag
+#if first time flag
+if [[ -v NEW_USER_FLAG  ]]
+then
     #add new user record
+  INSERT_NEW_USER=$($PSQL "INSERT INTO players(name, games_played, best_game) VALUES('$USERNAME', 1, $GUESS_COUNT)") 
     #else, pull best #guesses from DB
+else
     #increase number of games played by 1
+  UPDATE_GAMES_PLAYED=$($PSQL "UPDATE players SET games_played = games_played + 1 WHERE name = '$USERNAME'")
+  CURRENT_BEST_GUESS=$($PSQL "SELECT best_game FROM players WHERE name = '$USERNAME'")
     #if current guesses less than best guess
+  if [[ $CURRENT_BEST_GUESS > $GUESS_COUNT ]]
+  then
     #update best guess
+    UPDATE_BEST_GAME=$($PSQL "UPDATE players SET best_game = $GUESS_COUNT WHERE name = '$USERNAME'")
+  fi
+fi
