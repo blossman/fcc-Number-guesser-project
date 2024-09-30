@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#set up commit 1
+#set up
 #ADD PSQL Prompt
 PSQL="psql --username=freecodecamp --dbname=number_guess -t --no-align -c"
 
@@ -8,7 +8,6 @@ PSQL="psql --username=freecodecamp --dbname=number_guess -t --no-align -c"
 SECRET_NUMBER=$(( 1 + $RANDOM % 1000 ))
 
 
-#commit 2
 #request user name
 echo Enter your username:
 read USERNAME
@@ -28,7 +27,6 @@ else
   done
 fi
 
-#commit 4
 #data_storage
 #if first time flag
 SAVE_DATA () {
@@ -50,7 +48,6 @@ SAVE_DATA () {
   fi
 }
 
-#commit 3
 #print number request
 echo "Guess the secret number between 1 and 1000:"
 GUESS_COUNT=0
