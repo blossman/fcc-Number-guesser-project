@@ -21,7 +21,8 @@ then
   echo "Welcome, $USERNAME! It looks like this is your first time here."
   #else print returning message
 else
-  USER_INFO=$($PSQL "SELECT games_played, best_game FROM players WHERE name = '$USERNAME'") | while IFS='|' read GAMES_PLAYED BEST_GAME
+  USER_INFO=$($PSQL "SELECT games_played, best_game FROM players WHERE name = '$USERNAME'") 
+  echo $USER_INFO | while IFS='|' read GAMES_PLAYED BEST_GAME
   do
   echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
   done
@@ -88,7 +89,7 @@ else
   UPDATE_GAMES_PLAYED=$($PSQL "UPDATE players SET games_played = games_played + 1 WHERE name = '$USERNAME'")
   CURRENT_BEST_GUESS=$($PSQL "SELECT best_game FROM players WHERE name = '$USERNAME'")
     #if current guesses less than best guess
-  if [[ $CURRENT_BEST_GUESS > $GUESS_COUNT ]]
+  if [[ $CURRENT_BEST_GUESS -gt $GUESS_COUNT ]]
   then
     #update best guess
     UPDATE_BEST_GAME=$($PSQL "UPDATE players SET best_game = $GUESS_COUNT WHERE name = '$USERNAME'")
